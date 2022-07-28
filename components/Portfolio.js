@@ -1,11 +1,24 @@
-import React from "react";
 import styled from "styled-components";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import Coin from "./Coin";
 import { coins } from "../public/static/coins";
 import BalanceChart from "./BalanceChart";
 
-const Portfolio = () => {
+const Portfolio = ({ thirdWebTokens, sanityTokens, address }) => {
+  const tokenToUSD = {};
+
+  for (const token of sanityTokens) {
+    tokenToUSD[token.contractAddress] = Number(token.usdPrice);
+  }
+  console.table(tokenToUSD);
+
+  const calculateTotalBalance = async () => {
+    let total = 0;
+    for (const token of thirdWebTokens) {
+        const balance = await token.balanceOf(address);
+        total += Number(balance.displayValue) * tokenToUSD[token.address];
+    }
+  };
   return (
     <Wrapper>
       <Content>
